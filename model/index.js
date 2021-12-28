@@ -3,14 +3,17 @@ const contacts = require("./contacts.json");
 
 const listContacts = async () => {
   try {
-    const result = contacts;
-    return result;
+    return contacts;
   } catch (error) {
     console.log(error);
   }
 };
 
-const getContactById = async (contactId) => {};
+const getContactById = async (contactId) => {
+  const contacts = await listContacts();
+  const contact = contacts.filter((el) => contactId === el.id);
+  return contact;
+};
 
 const removeContact = async (contactId) => {};
 
