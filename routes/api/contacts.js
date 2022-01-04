@@ -1,7 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const Joi = require("joi");
-const { v4: uuidv4 } = require("uuid");
 const {
   listContacts,
   getContactById,
@@ -36,32 +34,16 @@ router.get("/:contactId", async (req, res, next) => {
 });
 
 router.post("/", async (req, res, next) => {
-  const data = await listContacts();
-
-  const schema = Joi.object({
-    name: Joi.string().required(),
-    email: Joi.string().required(),
-    phone: Joi.string().required(),
-  });
-
-  const validationResult = schema.validate(req.body);
-  if (validationResult.error) {
+  const result = await addContact(req.body);
+  if (result.error) {
     res.status(400).json({ message: "missing required name field" });
+  } else {
+    res.status(201).json({
+      status: "success",
+      code: 201,
+      data: { result },
+    });
   }
-  const { name, email, phone } = req.body;
-  const newContact = {
-    id: uuidv4(),
-    name,
-    email,
-    phone,
-  };
-  data.push(newContact);
-  addContact(data);
-  res.status(201).json({
-    status: "success",
-    code: 201,
-    data: { newContact },
-  });
 });
 
 router.delete("/:contactId", async (req, res, next) => {
@@ -76,13 +58,17 @@ router.delete("/:contactId", async (req, res, next) => {
 
 router.put("/:contactId", async (req, res, next) => {
   const { contactId } = req.params;
-  if (req.body) {
-    updateContact(contactId, req.body);
-
-    res.json({
-      status: "success",
-      code: 200,
-    });
+  if (Object.entries(req.body).length) {
+    const result = await updateContact(contactId, req.body);
+    if (result.error) {
+      res.status(400).json({ message: result.error.message });
+    } else {
+      res.json({
+        status: "success",
+        code: 200,
+        data: result,
+      });
+    }
   } else {
     res.status(400).json({ message: "missing fields" });
   }
