@@ -28,6 +28,7 @@ const removeContact = async (contactId) => {
     if (idx !== -1) {
       data.splice(idx, 1);
     }
+
     await fs.writeFile(contactsPath, JSON.stringify(data));
     return element;
   } catch (err) {
