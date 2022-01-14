@@ -23,6 +23,7 @@ const removeContact = async (contactId) => {
     const data = await listContacts();
     const element = await getContactById(contactId);
     const idx = data.findIndex((el) => el.id === contactId);
+
     if (idx !== -1) {
       data.splice(idx, 1);
     }

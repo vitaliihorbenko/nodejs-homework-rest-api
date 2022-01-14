@@ -57,6 +57,7 @@ router.post("/", async (req, res, next) => {
   };
   data.push(newContact);
   addContact(data);
+  
   res.status(201).json({
     status: "success",
     code: 201,
