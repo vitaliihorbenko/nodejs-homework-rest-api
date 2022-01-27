@@ -1,3 +1,4 @@
-const hashPassword = require("./register");
+const register = require("./register");
+const login = require("./login");
 
-module.exports = { hashPassword };
+module.exports = { register, login };
