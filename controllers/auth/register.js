@@ -1,6 +1,8 @@
 const bcrypt = require("bcrypt");
 const { BadRequest, Conflict } = require("http-errors");
 const { User, joiRegisterSchema } = require("../../models/");
+const gravatar = require("gravatar");
+
 
 const register = async (req, res, next) => {
   const { error } = joiRegisterSchema.validate(req.body);
@@ -14,7 +16,8 @@ const register = async (req, res, next) => {
   }
   const salt = await bcrypt.genSalt(10);
   const hashPassword = await bcrypt.hash(password, salt);
-  await User.create({ email, password: hashPassword });
+  const avatarURL = gravatar.url(email)
+  await User.create({ email, avatarURL, password: hashPassword });
 
   res.status(201).json({
     email,
